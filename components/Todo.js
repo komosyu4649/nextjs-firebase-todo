@@ -6,14 +6,20 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { db } from '../firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { TodoContext } from '../pages/TodoContext';
+import {useRouter} from "next/router"
 
 const Todo = ({id,title,timestamp,detail}) => {
     const {showAlert,todo, setTodo} = useContext(TodoContext)
+    const router = useRouter()
     const deleteTodo = async(id,e) => {
         e.stopPropagation()
         const docRef = doc(db, "todos", id)
         await deleteDoc(docRef)
         showAlert("error", id)
+    }
+    const seeMore = (id, e) => {
+        e.stopPropagation()
+        router.push(`/todos/${id}`)
     }
     return (
         <ListItem onClick={() => setTodo({id,title,timestamp,detail})}
@@ -25,7 +31,7 @@ const Todo = ({id,title,timestamp,detail}) => {
                         <IconButton onClick={(e) => deleteTodo(id, e)}>
                             <DeleteIcon/>
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={(e) => seeMore(id, e)}>
                             <MoreVertIcon/>
                         </IconButton>
                     </>
